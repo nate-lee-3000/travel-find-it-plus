@@ -6,6 +6,7 @@
   const STORAGE_KEY = 'roadTripSpotter.v1';
   const DATA_FILE = 'road_trip_spotting_game.json';
   const PAIRS_PER_ROUND = 3;
+  const WIN_TARGET = 2; // items a player must find to win the round
   const RECENT_PAIR_CAP = 150;
   const HISTORY_CAP = 200;
 
@@ -298,15 +299,21 @@
 
   function toggleFound(who, idx) {
     const r = store.current;
-    if (!r || r.status !== 'playing' || r.pending) return;
+    if (!r || (r.status !== 'playing' && r.status !== 'won') || r.pending) return;
     r.found[who][idx] = !r.found[who][idx];
     r.lastToggle = { who, idx };
-    if (r.found[who][idx]) beep(progress(r, who) === 3 ? 880 : 660);
-    const p1Done = progress(r, 'p1') === 3;
-    const p2Done = progress(r, 'p2') === 3;
-    if (p1Done && p2Done) r.pending = 'tie';
-    else if (p1Done) r.pending = 'p1';
-    else if (p2Done) r.pending = 'p2';
+    if (r.found[who][idx]) beep(progress(r, who) === WIN_TARGET ? 880 : 660);
+    if (r.status === 'playing') {
+      const p1Done = progress(r, 'p1') >= WIN_TARGET;
+      const p2Done = progress(r, 'p2') >= WIN_TARGET;
+      if (p1Done && p2Done) r.pending = 'tie';
+      else if (p1Done) r.pending = 'p1';
+      else if (p2Done) r.pending = 'p2';
+    } else {
+      // Continued play after the win: keep the history entry's board in sync.
+      const entry = store.history.find(h => h.id === r.id);
+      if (entry) entry.found = { p1: r.found.p1.slice(), p2: r.found.p2.slice() };
+    }
     save();
     render();
   }
@@ -325,6 +332,7 @@
   function finishRound(result) {
     const r = store.current;
     if (!r) return;
+    ui.modal = null;
     const entry = {
       id: r.id,
       date: new Date().toISOString(),
@@ -343,10 +351,23 @@
     }
     store.history.unshift(entry);
     store.history = store.history.slice(0, HISTORY_CAP);
-    store.current = null;
-    store.lastResult = result === 'abandoned' ? null : entry;
+    if (result === 'abandoned') {
+      store.current = null;
+    } else {
+      // Keep the board so players can continue looking after the winner is decided.
+      r.status = 'won';
+      r.winner = result;
+      r.pending = null;
+      r.lastToggle = null;
+      store.lastResult = entry;
+    }
     save();
     show(result === 'abandoned' ? 'home' : 'results');
+  }
+
+  function endBoard() {
+    store.current = null;
+    save();
   }
 
   // ---------- Sound (off by default) ----------
@@ -391,22 +412,25 @@
     const r = store.current;
     let resume = '';
     if (r) {
-      const status = r.status === 'playing'
-        ? `${esc(r.p1)} ${progress(r, 'p1')}/3 &middot; ${esc(r.p2)} ${progress(r, 'p2')}/3`
+      const score = `${esc(r.p1)} ${progress(r, 'p1')}/3 &middot; ${esc(r.p2)} ${progress(r, 'p2')}/3`;
+      const status = r.status === 'playing' ? score
+        : r.status === 'won' ? `${esc(winnerText(r))} &mdash; still looking (${score})`
         : 'Choosing items';
       resume = `<section class="card resume">
         <h2>Unfinished game</h2>
         <p>${esc(r.p1)} vs ${esc(r.p2)} &mdash; ${status}</p>
         <div class="btn-row">
           <button class="btn btn-primary btn-lg" data-action="resume">Resume game</button>
-          <button class="btn btn-secondary" data-action="confirm-abandon">Abandon</button>
+          ${r.status === 'won'
+            ? '<button class="btn btn-secondary" data-action="end-board">Finish board</button>'
+            : '<button class="btn btn-secondary" data-action="confirm-abandon">Abandon</button>'}
         </div></section>`;
     }
     return `<div class="home">
       <div class="hero">
         <div class="logo" aria-hidden="true"><span class="dot dot-p1"></span><span class="dot dot-p2"></span></div>
         <h1>Road Trip Spotter</h1>
-        <p class="tagline">Two players. Three pairs. First to spot all three wins.</p>
+        <p class="tagline">Two players. Three pairs. First to spot two wins.</p>
       </div>
       ${resume}
       <nav class="menu">
@@ -420,7 +444,8 @@
           <li>Get three pairs of similar things, like <b>Cow</b> vs <b>Horse</b>.</li>
           <li>Player 1 picks one item from each pair. Player 2 gets the other.</li>
           <li>Watch for all three of your items at once, in any order.</li>
-          <li>Tap <b>Mark found</b> when you spot one. First to find all three wins.</li>
+          <li>Tap <b>Mark found</b> when you spot one. First to find two of three wins.</li>
+          <li>Want to keep going? Continue the board after the winner is declared.</li>
         </ol>
       </section></div>`;
   }
@@ -509,8 +534,18 @@
       <span class="pdots" aria-hidden="true">${dots}</span><span class="score-num">${n} of 3</span></div>`;
   }
 
+  function winnerText(r) {
+    return r.winner === 'tie' ? 'Tie game' : `${r[r.winner]} won`;
+  }
+
   function renderPlay() {
     const r = store.current;
+    const banner = r.status === 'won'
+      ? `<div class="won-banner win-${r.winner}"><div><b>${esc(winnerText(r))}!</b>
+          <span class="hint">Keep looking for the rest, or start a new round.</span></div>
+          <div class="btn-row"><button class="btn btn-primary" data-action="new-round">New Round</button>
+          <button class="btn btn-secondary" data-action="nav" data-to="results">Results</button></div></div>`
+      : '';
     const cards = r.pairs.map((rp, i) => {
       const p = getPair(rp.pairId);
       const side = who => {
@@ -526,10 +561,13 @@
     }).join('');
     return `<div class="play">
       <div class="scorebar">${scoreChip(r, 'p1')}${scoreChip(r, 'p2')}</div>
+      ${banner}
       <main class="play-grid">${cards}</main>
       <div class="btn-row center play-footer">
         <button class="btn btn-ghost" data-action="nav" data-to="home">Menu</button>
-        <button class="btn btn-ghost danger" data-action="confirm-abandon">Abandon round</button>
+        ${r.status === 'won'
+          ? '<button class="btn btn-ghost" data-action="end-board" data-then="home">Finish board</button>'
+          : '<button class="btn btn-ghost danger" data-action="confirm-abandon">Abandon round</button>'}
       </div></div>`;
   }
 
@@ -550,14 +588,17 @@
     const e = store.lastResult;
     if (!e) return renderHome();
     const msg = e.result === 'tie'
-      ? `<h1 class="win-title">It's a tie!</h1><p>${esc(e.p1)} and ${esc(e.p2)} both found all three.</p>`
-      : `<h1 class="win-title c-${e.result}">${esc(e[e.result])} wins!</h1><p>First to spot all three targets.</p>`;
+      ? `<h1 class="win-title">It's a tie!</h1><p>${esc(e.p1)} and ${esc(e.p2)} finished together.</p>`
+      : `<h1 class="win-title c-${e.result}">${esc(e[e.result])} wins!</h1><p>First to spot two of three targets.</p>`;
+    const r = store.current;
+    const canContinue = r && r.status === 'won' && r.id === e.id;
     return `<main class="container results-screen">
       <section class="card win-card win-${e.result}">${msg}</section>
       ${resultTable(e)}
       <p class="hint center">Series: ${esc(store.settings.p1)} ${store.stats.p1Wins} &middot; ${esc(store.settings.p2)} ${store.stats.p2Wins} &middot; Ties ${store.stats.ties}</p>
       <div class="menu">
         <button class="btn btn-primary btn-xl" data-action="new-round">New Round</button>
+        ${canContinue ? '<button class="btn btn-secondary btn-lg" data-action="nav" data-to="play">Keep playing this board</button>' : ''}
         <button class="btn btn-secondary btn-lg" data-action="nav" data-to="setup">Change settings</button>
         <button class="btn btn-secondary btn-lg" data-action="nav" data-to="home">Main Menu</button>
       </div></main>`;
@@ -640,13 +681,13 @@
     let title = '', body = '', buttons = '';
     if (r && r.status === 'playing' && r.pending) {
       if (r.pending === 'tie') {
-        title = 'Both found all three!';
+        title = 'Both found two!';
         body = "It's a tie.";
         buttons = `<button class="btn btn-primary btn-lg" data-action="finish" data-result="tie">Confirm tie</button>
           <button class="btn btn-secondary" data-action="undo-last">Undo last tap</button>`;
       } else {
         const w = r.pending;
-        title = `${esc(r[w])} found all three!`;
+        title = `${esc(r[w])} found two of three!`;
         body = 'Confirm the win, or call a tie if you both finished at the same moment.';
         buttons = `<button class="btn btn-primary btn-lg btn-${w}" data-action="finish" data-result="${w}">${esc(r[w])} wins</button>
           <button class="btn btn-secondary" data-action="finish" data-result="tie">We finished together (tie)</button>
@@ -669,7 +710,7 @@
   function render() {
     // Guard against screens that need a round when none exists.
     if ((ui.screen === 'select' && !(store.current && store.current.status === 'selecting')) ||
-        (ui.screen === 'play' && !(store.current && store.current.status === 'playing'))) {
+        (ui.screen === 'play' && !(store.current && (store.current.status === 'playing' || store.current.status === 'won')))) {
       ui.screen = 'home';
     }
     const screens = {
@@ -690,7 +731,7 @@
     nav: d => show(d.to),
     resume: () => {
       ui.modal = null;
-      show(store.current.status === 'playing' ? 'play' : 'select');
+      show(store.current.status === 'selecting' ? 'select' : 'play');
     },
     chip: d => {
       const s = store.settings;
@@ -718,6 +759,7 @@
       } else startNew();
     },
     'new-round': () => newRoundFromSettings(),
+    'end-board': () => { endBoard(); show('home'); },
     regenerate: () => newRoundFromSettings(store.current ? store.current.pairs.map(p => p.pairId) : []),
     choose: d => chooseItem(Number(d.idx), d.item),
     randomize: () => randomizePicks(),
@@ -781,6 +823,13 @@
   loadData().then(() => {
     const r = store.current;
     if (r && r.pairs.some(p => !getPair(p.pairId))) store.current = null; // data changed under a saved round
+    const cur = store.current;
+    if (cur && cur.status === 'playing' && !cur.pending) {
+      // Saved round may already meet the win condition (e.g. saved under older rules).
+      const p1Done = progress(cur, 'p1') >= WIN_TARGET;
+      const p2Done = progress(cur, 'p2') >= WIN_TARGET;
+      if (p1Done || p2Done) { cur.pending = p1Done && p2Done ? 'tie' : p1Done ? 'p1' : 'p2'; save(); }
+    }
     if (store.current) {
       ui.modal = {
         type: 'confirm', title: 'Resume unfinished game?',

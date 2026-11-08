@@ -1,6 +1,6 @@
 # Road Trip Spotter
 
-A standalone two-player road-trip spotting game. Each round has three pairs of similar things, such as Cow vs Horse. Player 1 picks one item from each pair, and Player 2 gets the other one. Both players search for all three of their items at the same time, in any order. The first player to spot all three wins.
+A standalone two-player road-trip spotting game. Each round has three pairs of similar things, such as Cow vs Horse. Player 1 picks one item from each pair, and Player 2 gets the other one. Both players search for all three of their items at the same time, in any order. The first player to spot **two of three** wins. Afterwards, players can keep looking for their remaining items.
 
 It uses only HTML, CSS and vanilla JavaScript. There is no server, account or internet connection, and nothing to install.
 
@@ -120,5 +120,6 @@ When you reopen the app, it offers to resume any unfinished round. Data stays on
 
 - All three pairs stay on screen for the whole round. Each player's "Mark found" buttons affect only that player.
 - Tapping a found item again un-marks it.
-- When a player reaches 3 of 3, a confirmation appears with three choices: confirm the win, call a tie (if both finished together), or undo the last tap. If one tap completes both players, it is a tie.
+- When a player reaches 2 of 3, a confirmation appears with three choices: confirm the win, call a tie (if both finished together), or undo the last tap.
+- After the win, the results screen offers **New Round**, **Keep playing this board** and **Main Menu**. On a continued board the winner stays decided, and a banner offers **New Round** at any time. Items found afterwards are added to that round's history entry. **Finish board** closes it.
 - "Abandon round" records the round as abandoned. It doesn't count as a game played, a win or a loss.

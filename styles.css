@@ -173,6 +173,15 @@ button { font: inherit; color: inherit; }
 .target.done .target-item { text-decoration: line-through; text-decoration-thickness: 3px; color: var(--ok); }
 .target.done .found-btn { background: var(--card); color: var(--ok); border-color: var(--ok); }
 .play-footer { margin-top: 12px; }
+.won-banner {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px;
+  border: 3px solid var(--primary); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 12px;
+  background: var(--card);
+}
+.won-banner b { font-size: 1.15rem; display: block; }
+.won-banner .btn-row { margin: 0; }
+.won-banner.win-p1 { border-color: var(--p1); background: var(--p1-soft); }
+.won-banner.win-p2 { border-color: var(--p2); background: var(--p2-soft); }
 
 @media (min-width: 900px) {
   .play-grid { grid-template-columns: repeat(3, 1fr); }

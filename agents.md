@@ -42,7 +42,8 @@ The game has:
 - Each player is independently searching for their three selected items.
 - All three searches are active simultaneously.
 - Players can find their targets in any order.
-- The first player to find all three of their selected items wins.
+- The first player to find two out of three of their selected items wins.
+- Players should be able to continue playing their board after a winner has been determined to account for cases where players may want to continue looking for their items (i.e. flexibility for completionist or younger players)
 
 ### Example round
 
@@ -105,11 +106,12 @@ Repeat for all three categories.
 
 ### Winning behavior
 
-When a player completes all three targets:
+When a player completes all two of three targets:
 - Declare that player the winner.
 - Display a clear winning message.
 - Show the final score/progress.
-- Provide options to start another round or return to the main menu.
+- Provide options to start another round, return to the main menu, or continue playing the current set.
+- If players choose to continue playing after a winner is declared, provide a means to start another round
 
 If both players complete their third target simultaneously, declare a tie.
 
