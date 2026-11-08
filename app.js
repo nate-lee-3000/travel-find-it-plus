@@ -899,6 +899,11 @@
     app.innerHTML = `<main class="container"><section class="card"><h1>Could not load game data</h1><p>${esc(err.message)}</p></section></main>`;
   });
 
+  // Offline support: only available over http(s), e.g. when hosted on GitHub Pages.
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    navigator.serviceWorker.register('sw.js').catch(() => { /* offline caching unavailable */ });
+  }
+
   // Exposed for console debugging/tests.
   window.RoadTripSpotter = { validateData, generatePairs: s => generatePairs(s || store.settings), getStore: () => store };
 })();

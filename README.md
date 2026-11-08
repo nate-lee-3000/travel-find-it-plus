@@ -26,6 +26,18 @@ powershell -ExecutionPolicy Bypass -File tools\embed-data.ps1
 | `app.js` | Game logic, pair generation, validation, storage, rendering |
 | `road_trip_spotting_game.json` | The game database (source of truth) |
 | `tools/embed-data.ps1` | Copies the JSON into `index.html` |
+| `manifest.webmanifest`, `icons/` | Lets phones install the game to the home screen |
+| `sw.js` | Service worker that caches the game for offline play |
+
+## Playing on phones (hosted)
+
+The game is hosted free on GitHub Pages: **https://nate-lee-3000.github.io/travel-find-it-plus/**
+
+- Open the link once while you have signal. After that it works with no connection.
+- **Add to home screen.** On iPhone, open the link in Safari, tap Share, then Add to Home Screen. On Android, open it in Chrome, open the menu, then Install app or Add to Home screen.
+- Every push to `main` republishes the site. Phones update in the background, and the new version shows up the next time the app opens.
+- **When you change any app file**, bump `CACHE_VERSION` in `sw.js` (for example `spotter-v2`) so phones replace their cached copy. If you add a new file, also add it to `APP_FILES`.
+- Stats and history are stored separately on each phone.
 
 ## JSON database structure
 
