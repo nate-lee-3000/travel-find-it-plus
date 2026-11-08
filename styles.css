@@ -150,6 +150,12 @@ button { font: inherit; color: inherit; }
 .score-p2 { background: var(--p2); }
 .score-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.05rem; }
 .score-num { font-size: 1.15rem; }
+.score-sub { width: 100%; font-size: .8rem; font-weight: 600; opacity: .9; }
+.point-badge {
+  align-self: center; font-size: .85rem; font-weight: 800; padding: 3px 10px; border-radius: 999px;
+  background: var(--ok); color: var(--card);
+}
+.point-badge.none { background: transparent; color: var(--muted); border: 1px solid var(--line); font-weight: 600; }
 .pdots { display: inline-flex; gap: 4px; }
 .pdot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; }
 .pdot.on { background: currentColor; }

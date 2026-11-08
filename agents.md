@@ -6,7 +6,7 @@ Build a complete, polished, standalone HTML5 application for a two-player road t
 
 The game is based on a simple concept: two players are given three pairs of similar things to look for while traveling in a vehicle. Each player chooses one item from each pair. Both players then try to spot all three of their selected items while traveling.
 
-The first player to spot their selected item in all three categories wins the round.
+The first player to spot their selected item in a pair is awarded that pair's point, and the first to two points (i.e. winning two of the three pairs) is the winner.
 
 **Important:** All three pairs must remain visible and active simultaneously. Players can find their items in any order. This is NOT a turn-based game, and players should not have to complete one category before moving to another.
 
@@ -41,8 +41,9 @@ The game has:
 - Each player selects one item from each pair.
 - Each player is independently searching for their three selected items.
 - All three searches are active simultaneously.
+- Only one player is given a point for each pair, so whoever marks it first is granted the point - this does not prevent the other player from finding their item for that pair for fun, but the second one to find their item in a pair is not granted a point
 - Players can find their targets in any order.
-- The first player to find two out of three of their selected items wins.
+- The first player to earn two points (i.e. be first to find their item in two of the three pairs) wins. Because each pair awards only one point, there are no ties.
 - Players should be able to continue playing their board after a winner has been determined to account for cases where players may want to continue looking for their items (i.e. flexibility for completionist or younger players)
 
 ### Example round
@@ -96,24 +97,24 @@ Repeat for all three categories.
 
 ### Completion behavior
 
-- Each player independently tracks progress.
-- Marking one player's item found must not affect the other player's progress.
-- Completed items should be visually distinct.
-- Completion should be reversible in case of an accidental tap.
-- Show each player's progress, such as 1 of 3, 2 of 3, or 3 of 3.
+- Each player independently tracks which of their items they have found.
+- Marking one player's item found must not change the other player's found items. Points are separate: a pair's point goes to whichever player marked it first.
+- Completed items should be visually distinct, and it should be clear which player holds each pair's point.
+- Completion should be reversible in case of an accidental tap. If the player holding a pair's point un-marks it and the other player has also marked that pair, the point moves to the other player. If an undo takes the winner below two points, the win is cancelled.
+- Show each player's points (out of the two needed) and items found (out of three).
 - All three categories must remain visible throughout gameplay.
 - Do not require a specific order of completion.
 
 ### Winning behavior
 
-When a player completes all two of three targets:
+When a player is the first to earn two points (first to find their target in two of the three pairs):
 - Declare that player the winner.
 - Display a clear winning message.
 - Show the final score/progress.
 - Provide options to start another round, return to the main menu, or continue playing the current set.
-- If players choose to continue playing after a winner is declared, provide a means to start another round
+- If players choose to continue playing after a winner is declared, provide a means to start another round.
 
-If both players complete their third target simultaneously, declare a tie.
+There are no ties: each pair awards one point, so one player always reaches two points first.
 
 ## 4. Game Setup
 
@@ -145,6 +146,7 @@ Allow selection of:
 - Highway
 - Waterfront
 - Small Town
+- Industrial
 
 Allow multiple environments to be selected.
 
@@ -257,7 +259,6 @@ Display:
 - Total games played.
 - Player 1 wins.
 - Player 2 wins.
-- Ties.
 - Recent game history.
 - Most frequently played pairs.
 
@@ -342,8 +343,8 @@ Before considering the application complete, verify:
 - All three pairs appear simultaneously during gameplay.
 - Both players can complete targets in any order.
 - One player's progress does not affect the other.
-- A player wins when all three of their targets are found.
-- Ties are handled correctly.
+- A player wins when they are the first to earn two points (first to find their target in two of the three pairs).
+- A pair's point goes only to the first player to mark it, and moves correctly on undo.
 - Accidental completion can be reversed.
 - New rounds generate different pairs when possible.
 - Geographic, environmental, seasonal, and difficulty filters work.

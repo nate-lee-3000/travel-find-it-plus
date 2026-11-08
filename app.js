@@ -6,7 +6,7 @@
   const STORAGE_KEY = 'roadTripSpotter.v1';
   const DATA_FILE = 'road_trip_spotting_game.json';
   const PAIRS_PER_ROUND = 3;
-  const WIN_TARGET = 2; // items a player must find to win the round
+  const WIN_TARGET = 2; // points a player must earn to win the round
   const RECENT_PAIR_CAP = 150;
   const HISTORY_CAP = 200;
 
@@ -260,6 +260,8 @@
       relaxed: gen.relaxed,
       pairs: gen.pairs.map(p => ({ pairId: p.id, p1Item: null, p2Item: null })),
       found: { p1: [false, false, false], p2: [false, false, false] },
+      order: { p1: [null, null, null], p2: [null, null, null] },
+      seq: 0,
       lastToggle: null,
       pending: null
     };
@@ -297,23 +299,66 @@
 
   const progress = (r, who) => r.found[who].filter(Boolean).length;
 
+  // Each pair's point goes to whoever currently has the earliest mark on it.
+  function ensureOrder(r) {
+    if (r.order) return;
+    r.seq = 0;
+    r.order = { p1: [null, null, null], p2: [null, null, null] };
+    ['p1', 'p2'].forEach(w => r.found[w].forEach((f, i) => { if (f) r.order[w][i] = ++r.seq; }));
+  }
+
+  function pointOwner(r, i) {
+    ensureOrder(r);
+    const a = r.found.p1[i] ? r.order.p1[i] : null;
+    const b = r.found.p2[i] ? r.order.p2[i] : null;
+    if (a == null && b == null) return null;
+    if (b == null || (a != null && a < b)) return 'p1';
+    return 'p2';
+  }
+
+  const pointOwners = r => r.pairs.map((_, i) => pointOwner(r, i));
+  const points = (r, who) => pointOwners(r).filter(o => o === who).length;
+  const leader = r => ['p1', 'p2'].find(w => points(r, w) >= WIN_TARGET) || null;
+
+  function setMark(r, who, idx, on) {
+    ensureOrder(r);
+    r.found[who][idx] = on;
+    r.order[who][idx] = on ? ++r.seq : null;
+  }
+
+  function snapshot(r) {
+    return { found: { p1: r.found.p1.slice(), p2: r.found.p2.slice() }, points: pointOwners(r) };
+  }
+
+  // Undoing marks after a confirmed win can take the winner below two points.
+  function revokeWin(r) {
+    const idx = store.history.findIndex(h => h.id === r.id);
+    if (idx >= 0) {
+      const h = store.history[idx];
+      store.history.splice(idx, 1);
+      store.stats.played = Math.max(0, store.stats.played - 1);
+      if (h.result === 'p1') store.stats.p1Wins = Math.max(0, store.stats.p1Wins - 1);
+      if (h.result === 'p2') store.stats.p2Wins = Math.max(0, store.stats.p2Wins - 1);
+    }
+    if (store.lastResult && store.lastResult.id === r.id) store.lastResult = null;
+    r.status = 'playing';
+    r.winner = null;
+  }
+
   function toggleFound(who, idx) {
     const r = store.current;
     if (!r || (r.status !== 'playing' && r.status !== 'won') || r.pending) return;
-    r.found[who][idx] = !r.found[who][idx];
+    setMark(r, who, idx, !r.found[who][idx]);
     r.lastToggle = { who, idx };
-    if (r.found[who][idx]) beep(progress(r, who) === WIN_TARGET ? 880 : 660);
+    if (r.status === 'won' && r.winner !== 'tie' && points(r, r.winner) < WIN_TARGET) revokeWin(r);
     if (r.status === 'playing') {
-      const p1Done = progress(r, 'p1') >= WIN_TARGET;
-      const p2Done = progress(r, 'p2') >= WIN_TARGET;
-      if (p1Done && p2Done) r.pending = 'tie';
-      else if (p1Done) r.pending = 'p1';
-      else if (p2Done) r.pending = 'p2';
+      r.pending = leader(r);
     } else {
       // Continued play after the win: keep the history entry's board in sync.
       const entry = store.history.find(h => h.id === r.id);
-      if (entry) entry.found = { p1: r.found.p1.slice(), p2: r.found.p2.slice() };
+      if (entry) Object.assign(entry, snapshot(r));
     }
+    if (r.found[who][idx]) beep(r.pending ? 880 : 660);
     save();
     render();
   }
@@ -321,7 +366,8 @@
   function undoLastToggle() {
     const r = store.current;
     if (r && r.lastToggle) {
-      r.found[r.lastToggle.who][r.lastToggle.idx] = !r.found[r.lastToggle.who][r.lastToggle.idx];
+      const { who, idx } = r.lastToggle;
+      setMark(r, who, idx, !r.found[who][idx]);
       r.lastToggle = null;
     }
     if (r) r.pending = null;
@@ -339,15 +385,14 @@
       p1: r.p1, p2: r.p2,
       result,
       pairs: r.pairs.map(p => ({ ...p })),
-      found: { p1: r.found.p1.slice(), p2: r.found.p2.slice() }
+      ...snapshot(r)
     };
     if (result === 'abandoned') store.stats.abandoned++;
     else {
       store.stats.played++;
       if (result === 'p1') store.stats.p1Wins++;
       else if (result === 'p2') store.stats.p2Wins++;
-      else store.stats.ties++;
-      if (result !== 'tie') beep(990, 0.35);
+      beep(990, 0.35);
     }
     store.history.unshift(entry);
     store.history = store.history.slice(0, HISTORY_CAP);
@@ -412,7 +457,7 @@
     const r = store.current;
     let resume = '';
     if (r) {
-      const score = `${esc(r.p1)} ${progress(r, 'p1')}/3 &middot; ${esc(r.p2)} ${progress(r, 'p2')}/3`;
+      const score = `${esc(r.p1)} ${points(r, 'p1')} pts &middot; ${esc(r.p2)} ${points(r, 'p2')} pts`;
       const status = r.status === 'playing' ? score
         : r.status === 'won' ? `${esc(winnerText(r))} &mdash; still looking (${score})`
         : 'Choosing items';
@@ -444,7 +489,8 @@
           <li>Get three pairs of similar things, like <b>Cow</b> vs <b>Horse</b>.</li>
           <li>Player 1 picks one item from each pair. Player 2 gets the other.</li>
           <li>Watch for all three of your items at once, in any order.</li>
-          <li>Tap <b>Mark found</b> when you spot one. First to find two of three wins.</li>
+          <li>Tap <b>Mark found</b> when you spot one. The first of you to spot your item in a pair wins that pair's point.</li>
+          <li>First to two points wins.</li>
           <li>Want to keep going? Continue the board after the winner is declared.</li>
         </ol>
       </section></div>`;
@@ -528,14 +574,16 @@
   }
 
   function scoreChip(r, who) {
-    const n = progress(r, who);
-    const dots = r.found[who].map(f => `<span class="pdot ${f ? 'on' : ''}"></span>`).join('');
+    const owners = pointOwners(r);
+    const dots = owners.map(o => `<span class="pdot ${o === who ? 'on' : ''}"></span>`).join('');
     return `<div class="score score-${who}"><span class="score-name">${esc(r[who])}</span>
-      <span class="pdots" aria-hidden="true">${dots}</span><span class="score-num">${n} of 3</span></div>`;
+      <span class="pdots" aria-hidden="true">${dots}</span>
+      <span class="score-num">${points(r, who)} of ${WIN_TARGET} pts</span>
+      <span class="score-sub">Found ${progress(r, who)} of 3</span></div>`;
   }
 
   function winnerText(r) {
-    return r.winner === 'tie' ? 'Tie game' : `${r[r.winner]} won`;
+    return r.winner === 'tie' ? 'Tie game' : `${r[r.winner]} won`; // ties only exist in older saves
   }
 
   function renderPlay() {
@@ -548,11 +596,15 @@
       : '';
     const cards = r.pairs.map((rp, i) => {
       const p = getPair(rp.pairId);
+      const owner = pointOwner(r, i);
       const side = who => {
         const done = r.found[who][i];
+        const badge = owner === who ? '<span class="point-badge">&#9733; Point</span>'
+          : done ? '<span class="point-badge none">Found 2nd &middot; no point</span>' : '';
         return `<div class="target target-${who} ${done ? 'done' : ''}">
           <span class="target-player">${esc(r[who])}</span>
           <span class="target-item">${esc(itemName(rp[who + 'Item']))}</span>
+          ${badge}
           <button class="btn found-btn" data-action="toggle" data-who="${who}" data-idx="${i}" aria-pressed="${done}">
             ${done ? '&#10003; Found &middot; tap to undo' : 'Mark found'}</button></div>`;
       };
@@ -572,30 +624,35 @@
   }
 
   function resultTable(entry) {
+    const owners = entry.points || [];
     const rows = entry.pairs.map((rp, i) => {
       const p = getPair(rp.pairId);
-      const cell = who => `<td class="${entry.found[who][i] ? 'yes' : 'no'}">${esc(itemName(rp[who + 'Item']))} ${entry.found[who][i] ? '&#10003;' : '&ndash;'}</td>`;
+      const cell = who => `<td class="${entry.found[who][i] ? 'yes' : 'no'}">${esc(itemName(rp[who + 'Item']))} ${entry.found[who][i] ? '&#10003;' : '&ndash;'}${owners[i] === who ? ' <b class="c-' + who + '">&#9733;</b>' : ''}</td>`;
       return `<tr><th scope="row">${esc(p ? categoryLabel(p.category_id) : rp.pairId)}</th>${cell('p1')}${cell('p2')}</tr>`;
     }).join('');
     const tot = who => entry.found[who].filter(Boolean).length;
+    const pts = who => owners.filter(o => o === who).length;
     return `<div class="table-wrap"><table class="results">
       <thead><tr><th>Category</th><th class="c-p1">${esc(entry.p1)}</th><th class="c-p2">${esc(entry.p2)}</th></tr></thead>
       <tbody>${rows}</tbody>
-      <tfoot><tr><th>Found</th><td>${tot('p1')} of 3</td><td>${tot('p2')} of 3</td></tr></tfoot></table></div>`;
+      <tfoot><tr><th>Points</th><td>${pts('p1')}</td><td>${pts('p2')}</td></tr>
+      <tr><th>Found</th><td>${tot('p1')} of 3</td><td>${tot('p2')} of 3</td></tr></tfoot></table></div>
+      <p class="hint">&#9733; = point for spotting that pair first.</p>`;
   }
 
   function renderResults() {
     const e = store.lastResult;
     if (!e) return renderHome();
+    // Older saved rounds may predate the point rules (e.g. recorded ties).
     const msg = e.result === 'tie'
-      ? `<h1 class="win-title">It's a tie!</h1><p>${esc(e.p1)} and ${esc(e.p2)} finished together.</p>`
-      : `<h1 class="win-title c-${e.result}">${esc(e[e.result])} wins!</h1><p>First to spot two of three targets.</p>`;
+      ? `<h1 class="win-title">It's a tie!</h1>`
+      : `<h1 class="win-title c-${e.result}">${esc(e[e.result])} wins!</h1><p>First to two points.</p>`;
     const r = store.current;
     const canContinue = r && r.status === 'won' && r.id === e.id;
     return `<main class="container results-screen">
       <section class="card win-card win-${e.result}">${msg}</section>
       ${resultTable(e)}
-      <p class="hint center">Series: ${esc(store.settings.p1)} ${store.stats.p1Wins} &middot; ${esc(store.settings.p2)} ${store.stats.p2Wins} &middot; Ties ${store.stats.ties}</p>
+      <p class="hint center">Series: ${esc(store.settings.p1)} ${store.stats.p1Wins} &middot; ${esc(store.settings.p2)} ${store.stats.p2Wins}</p>
       <div class="menu">
         <button class="btn btn-primary btn-xl" data-action="new-round">New Round</button>
         ${canContinue ? '<button class="btn btn-secondary btn-lg" data-action="nav" data-to="play">Keep playing this board</button>' : ''}
@@ -621,11 +678,14 @@
     };
     const tiles = [
       ['Games played', st.played, ''], [`${store.settings.p1} wins`, st.p1Wins, 'c-p1'],
-      [`${store.settings.p2} wins`, st.p2Wins, 'c-p2'], ['Ties', st.ties, ''], ['Abandoned', st.abandoned, '']
+      [`${store.settings.p2} wins`, st.p2Wins, 'c-p2'], ['Abandoned', st.abandoned, '']
     ].map(([l, v, cls]) => `<div class="tile"><span class="tile-v ${cls}">${v}</span><span class="tile-l">${esc(l)}</span></div>`).join('');
+    const histScore = (h, who) => h.points
+      ? `${h.points.filter(o => o === who).length} pts`
+      : `${h.found[who].filter(Boolean).length}/3`;
     const hist = store.history.slice(0, 15).map(h => `<li>
       <div class="h-top"><b>${esc(resultLabel(h))}</b><span>${esc(new Date(h.date).toLocaleString())}</span></div>
-      <div class="h-sub">${esc(h.p1)} ${h.found.p1.filter(Boolean).length}/3 vs ${esc(h.p2)} ${h.found.p2.filter(Boolean).length}/3</div>
+      <div class="h-sub">${esc(h.p1)} ${histScore(h, 'p1')} vs ${esc(h.p2)} ${histScore(h, 'p2')}</div>
       <div class="h-sub">${h.pairs.map(rp => esc(pairText(rp.pairId))).join(' &middot; ')}</div></li>`).join('');
     return `${header('Statistics', 'home')}
     <main class="container">
@@ -680,19 +740,11 @@
     const r = store.current;
     let title = '', body = '', buttons = '';
     if (r && r.status === 'playing' && r.pending) {
-      if (r.pending === 'tie') {
-        title = 'Both found two!';
-        body = "It's a tie.";
-        buttons = `<button class="btn btn-primary btn-lg" data-action="finish" data-result="tie">Confirm tie</button>
-          <button class="btn btn-secondary" data-action="undo-last">Undo last tap</button>`;
-      } else {
-        const w = r.pending;
-        title = `${esc(r[w])} found two of three!`;
-        body = 'Confirm the win, or call a tie if you both finished at the same moment.';
-        buttons = `<button class="btn btn-primary btn-lg btn-${w}" data-action="finish" data-result="${w}">${esc(r[w])} wins</button>
-          <button class="btn btn-secondary" data-action="finish" data-result="tie">We finished together (tie)</button>
-          <button class="btn btn-secondary" data-action="undo-last">Undo last tap</button>`;
-      }
+      const w = r.pending;
+      title = `${esc(r[w])} has two points!`;
+      body = 'Confirm the win, or undo the last tap if it was a mistake.';
+      buttons = `<button class="btn btn-primary btn-lg btn-${w}" data-action="finish" data-result="${w}">${esc(r[w])} wins</button>
+        <button class="btn btn-secondary" data-action="undo-last">Undo last tap</button>`;
     } else if (m) {
       title = esc(m.title);
       body = esc(m.body);
@@ -824,11 +876,10 @@
     const r = store.current;
     if (r && r.pairs.some(p => !getPair(p.pairId))) store.current = null; // data changed under a saved round
     const cur = store.current;
-    if (cur && cur.status === 'playing' && !cur.pending) {
-      // Saved round may already meet the win condition (e.g. saved under older rules).
-      const p1Done = progress(cur, 'p1') >= WIN_TARGET;
-      const p2Done = progress(cur, 'p2') >= WIN_TARGET;
-      if (p1Done || p2Done) { cur.pending = p1Done && p2Done ? 'tie' : p1Done ? 'p1' : 'p2'; save(); }
+    if (cur && cur.status === 'playing') {
+      // Re-derive the pending win from points (saved rounds may predate the point rules).
+      cur.pending = leader(cur);
+      save();
     }
     if (store.current) {
       ui.modal = {

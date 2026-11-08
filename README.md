@@ -1,6 +1,6 @@
 # Road Trip Spotter
 
-A standalone two-player road-trip spotting game. Each round has three pairs of similar things, such as Cow vs Horse. Player 1 picks one item from each pair, and Player 2 gets the other one. Both players search for all three of their items at the same time, in any order. The first player to spot **two of three** wins. Afterwards, players can keep looking for their remaining items.
+A standalone two-player road-trip spotting game. Each round has three pairs of similar things, such as Cow vs Horse. Player 1 picks one item from each pair, and Player 2 gets the other one. Both players search for all three of their items at the same time, in any order. The first player to spot their item in a pair wins that pair's point. The first to **two points** wins. Afterwards, players can keep looking for their remaining items.
 
 It uses only HTML, CSS and vanilla JavaScript. There is no server, account or internet connection, and nothing to install.
 
@@ -103,7 +103,7 @@ Unknown subcategory, region or environment IDs are reported as warnings. Invalid
 Everything is saved in one key, `roadTripSpotter.v1`, in the browser you play in:
 
 - `settings`: player names, filter choices, sound (off by default), the exclude-recent option and its window (3, 5 or 10 rounds)
-- `stats`: games played, Player 1 wins, Player 2 wins, ties, abandoned rounds
+- `stats`: games played, Player 1 wins, Player 2 wins, abandoned rounds (plus a legacy `ties` count from older versions)
 - `history`: up to 200 past rounds (pairs, picks, what was found, result)
 - `recentPairs`: recently played pair IDs, used to avoid repeats
 - `current`: the unfinished round, so it survives a refresh or closed tab
@@ -118,8 +118,10 @@ When you reopen the app, it offers to resume any unfinished round. Data stays on
 
 ## Gameplay notes
 
-- All three pairs stay on screen for the whole round. Each player's "Mark found" buttons affect only that player.
+- All three pairs stay on screen for the whole round. Each player's "Mark found" buttons affect only that player's found items.
 - Tapping a found item again un-marks it.
-- When a player reaches 2 of 3, a confirmation appears with three choices: confirm the win, call a tie (if both finished together), or undo the last tap.
-- After the win, the results screen offers **New Round**, **Keep playing this board** and **Main Menu**. On a continued board the winner stays decided, and a banner offers **New Round** at any time. Items found afterwards are added to that round's history entry. **Finish board** closes it.
+- **Points:** a pair's point (shown as a star) goes to whichever player marked it first. The other player can still mark their item for fun, but it shows "Found 2nd · no point". Points are recalculated from the current marks. If the point holder un-marks their item and the other player has already marked theirs, the point moves to the other player.
+- There are no ties, because one player always reaches two points first.
+- When a player reaches 2 points, a confirmation appears: confirm the win, or undo the last tap.
+- After the win, the results screen offers **New Round**, **Keep playing this board** and **Main Menu**. On a continued board, a banner offers **New Round** at any time. Items found afterwards are added to that round's history entry. If un-marking items takes the winner below two points, the win and its stats are cancelled and play resumes. **Finish board** closes it.
 - "Abandon round" records the round as abandoned. It doesn't count as a game played, a win or a loss.
