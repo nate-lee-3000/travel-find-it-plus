@@ -1,0 +1,3625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="snowflake-source" content="cortex-agent-authored">
+  <meta name="theme-color" content="#0f766e">
+  <title>Road Trip Spotter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" aria-live="polite">
+    <main class="container"><p>Loading&hellip;</p></main>
+  </div>
+  <noscript><p style="padding:20px">Road Trip Spotter needs JavaScript enabled.</p></noscript>
+
+  <!-- Fallback copy of road_trip_spotting_game.json, used when the page is opened
+       from disk (file://) where browsers block reading the JSON file.
+       Regenerate with: powershell -ExecutionPolicy Bypass -File tools\embed-data.ps1 -->
+  <script type="application/json" id="embedded-game-data">
+{
+  "schema_version": "1.0.0",
+  "description": "Road-trip spotting game. Each pair contains two comparable targets; metadata supports geographic, environment, season, likelihood, and difficulty filtering.",
+  "collections": {
+    "items": [
+      {
+        "id": "cow",
+        "name": "Cow"
+      },
+      {
+        "id": "horse",
+        "name": "Horse"
+      },
+      {
+        "id": "sheep",
+        "name": "Sheep"
+      },
+      {
+        "id": "goat",
+        "name": "Goat"
+      },
+      {
+        "id": "chicken_coop",
+        "name": "Chicken coop"
+      },
+      {
+        "id": "duck_pond",
+        "name": "Duck pond"
+      },
+      {
+        "id": "donkey",
+        "name": "Donkey"
+      },
+      {
+        "id": "mule",
+        "name": "Mule"
+      },
+      {
+        "id": "cornfield",
+        "name": "Cornfield"
+      },
+      {
+        "id": "soybean_field",
+        "name": "Soybean field"
+      },
+      {
+        "id": "hay_bales",
+        "name": "Hay bales"
+      },
+      {
+        "id": "straw_bales",
+        "name": "Straw bales"
+      },
+      {
+        "id": "red_barn",
+        "name": "Red barn"
+      },
+      {
+        "id": "white_barn",
+        "name": "White barn"
+      },
+      {
+        "id": "grain_silo",
+        "name": "Grain silo"
+      },
+      {
+        "id": "grain_elevator",
+        "name": "Grain elevator"
+      },
+      {
+        "id": "tractor",
+        "name": "Tractor"
+      },
+      {
+        "id": "combine_harvester",
+        "name": "Combine harvester"
+      },
+      {
+        "id": "apple_orchard",
+        "name": "Apple orchard"
+      },
+      {
+        "id": "cherry_orchard",
+        "name": "Cherry orchard"
+      },
+      {
+        "id": "water_tower",
+        "name": "Water tower"
+      },
+      {
+        "id": "windmill",
+        "name": "Windmill"
+      },
+      {
+        "id": "covered_bridge",
+        "name": "Covered bridge"
+      },
+      {
+        "id": "wooden_pedestrian_bridge",
+        "name": "Wooden pedestrian bridge"
+      },
+      {
+        "id": "railroad_crossing",
+        "name": "Railroad crossing"
+      },
+      {
+        "id": "drawbridge",
+        "name": "Drawbridge"
+      },
+      {
+        "id": "round_hay_bale",
+        "name": "Round hay bale"
+      },
+      {
+        "id": "square_hay_bale",
+        "name": "Square hay bale"
+      },
+      {
+        "id": "farm_pond",
+        "name": "Farm pond"
+      },
+      {
+        "id": "livestock_watering_pond",
+        "name": "Livestock watering pond"
+      },
+      {
+        "id": "church_steeple",
+        "name": "Church steeple"
+      },
+      {
+        "id": "school_flagpole",
+        "name": "School flagpole"
+      },
+      {
+        "id": "cell_tower",
+        "name": "Cell tower"
+      },
+      {
+        "id": "radio_tower",
+        "name": "Radio tower"
+      },
+      {
+        "id": "wooden_fence",
+        "name": "Wooden fence"
+      },
+      {
+        "id": "wire_livestock_fence",
+        "name": "Wire livestock fence"
+      },
+      {
+        "id": "wind_turbine",
+        "name": "Wind turbine"
+      },
+      {
+        "id": "solar_panel_field",
+        "name": "Solar panel field"
+      },
+      {
+        "id": "taco_bell",
+        "name": "Taco Bell"
+      },
+      {
+        "id": "mcdonald_s",
+        "name": "McDonald's"
+      },
+      {
+        "id": "burger_king",
+        "name": "Burger King"
+      },
+      {
+        "id": "wendy_s",
+        "name": "Wendy's"
+      },
+      {
+        "id": "arby_s",
+        "name": "Arby's"
+      },
+      {
+        "id": "culver_s",
+        "name": "Culver's"
+      },
+      {
+        "id": "dairy_queen",
+        "name": "Dairy Queen"
+      },
+      {
+        "id": "baskin_robbins",
+        "name": "Baskin-Robbins"
+      },
+      {
+        "id": "subway",
+        "name": "Subway"
+      },
+      {
+        "id": "jimmy_john_s",
+        "name": "Jimmy John's"
+      },
+      {
+        "id": "domino_s",
+        "name": "Domino's"
+      },
+      {
+        "id": "little_caesars",
+        "name": "Little Caesars"
+      },
+      {
+        "id": "tim_hortons",
+        "name": "Tim Hortons"
+      },
+      {
+        "id": "dunkin",
+        "name": "Dunkin'"
+      },
+      {
+        "id": "starbucks",
+        "name": "Starbucks"
+      },
+      {
+        "id": "biggby_coffee",
+        "name": "Biggby Coffee"
+      },
+      {
+        "id": "kfc",
+        "name": "KFC"
+      },
+      {
+        "id": "popeyes",
+        "name": "Popeyes"
+      },
+      {
+        "id": "local_diner",
+        "name": "Local diner"
+      },
+      {
+        "id": "family_style_restaurant",
+        "name": "Family-style restaurant"
+      },
+      {
+        "id": "fast_food_billboard",
+        "name": "Fast-food billboard"
+      },
+      {
+        "id": "lawyer_billboard",
+        "name": "Lawyer billboard"
+      },
+      {
+        "id": "car_dealership_billboard",
+        "name": "Car dealership billboard"
+      },
+      {
+        "id": "casino_billboard",
+        "name": "Casino billboard"
+      },
+      {
+        "id": "real_estate_sign",
+        "name": "Real estate sign"
+      },
+      {
+        "id": "political_campaign_sign",
+        "name": "Political campaign sign"
+      },
+      {
+        "id": "roofing_company_sign",
+        "name": "Roofing company sign"
+      },
+      {
+        "id": "landscaping_company_sign",
+        "name": "Landscaping company sign"
+      },
+      {
+        "id": "farm_equipment_advertisement",
+        "name": "Farm equipment advertisement"
+      },
+      {
+        "id": "tractor_dealership_sign",
+        "name": "Tractor dealership sign"
+      },
+      {
+        "id": "liquor_store",
+        "name": "Liquor store"
+      },
+      {
+        "id": "tobacco_shop",
+        "name": "Tobacco shop"
+      },
+      {
+        "id": "storage_facility",
+        "name": "Storage facility"
+      },
+      {
+        "id": "car_wash",
+        "name": "Car wash"
+      },
+      {
+        "id": "self_storage_sign",
+        "name": "Self-storage sign"
+      },
+      {
+        "id": "u_haul_sign",
+        "name": "U-Haul sign"
+      },
+      {
+        "id": "gas_station_with_car_wash",
+        "name": "Gas station with car wash"
+      },
+      {
+        "id": "gas_station_without_car_wash",
+        "name": "Gas station without car wash"
+      },
+      {
+        "id": "dollar_general",
+        "name": "Dollar General"
+      },
+      {
+        "id": "family_dollar",
+        "name": "Family Dollar"
+      },
+      {
+        "id": "kayak_on_a_vehicle",
+        "name": "Kayak on a vehicle"
+      },
+      {
+        "id": "bike_on_a_vehicle",
+        "name": "Bike on a vehicle"
+      },
+      {
+        "id": "boat_on_a_trailer",
+        "name": "Boat on a trailer"
+      },
+      {
+        "id": "camper_on_a_trailer",
+        "name": "Camper on a trailer"
+      },
+      {
+        "id": "motorcycle_on_a_trailer",
+        "name": "Motorcycle on a trailer"
+      },
+      {
+        "id": "atv_on_a_trailer",
+        "name": "ATV on a trailer"
+      },
+      {
+        "id": "tractor_on_a_trailer",
+        "name": "Tractor on a trailer"
+      },
+      {
+        "id": "excavator_on_a_trailer",
+        "name": "Excavator on a trailer"
+      },
+      {
+        "id": "canoe_on_a_vehicle",
+        "name": "Canoe on a vehicle"
+      },
+      {
+        "id": "paddleboard_on_a_vehicle",
+        "name": "Paddleboard on a vehicle"
+      },
+      {
+        "id": "snowmobile_on_a_trailer",
+        "name": "Snowmobile on a trailer"
+      },
+      {
+        "id": "jet_ski_on_a_trailer",
+        "name": "Jet ski on a trailer"
+      },
+      {
+        "id": "flatbed_truck",
+        "name": "Flatbed truck"
+      },
+      {
+        "id": "box_truck",
+        "name": "Box truck"
+      },
+      {
+        "id": "horse_trailer",
+        "name": "Horse trailer"
+      },
+      {
+        "id": "livestock_trailer",
+        "name": "Livestock trailer"
+      },
+      {
+        "id": "dump_truck",
+        "name": "Dump truck"
+      },
+      {
+        "id": "cement_mixer_truck",
+        "name": "Cement mixer truck"
+      },
+      {
+        "id": "pickup_towing_a_boat",
+        "name": "Pickup towing a boat"
+      },
+      {
+        "id": "pickup_towing_a_camper",
+        "name": "Pickup towing a camper"
+      },
+      {
+        "id": "fishing_boat",
+        "name": "Fishing boat"
+      },
+      {
+        "id": "pontoon_boat",
+        "name": "Pontoon boat"
+      },
+      {
+        "id": "sailboat",
+        "name": "Sailboat"
+      },
+      {
+        "id": "motorboat",
+        "name": "Motorboat"
+      },
+      {
+        "id": "kayak",
+        "name": "Kayak"
+      },
+      {
+        "id": "canoe",
+        "name": "Canoe"
+      },
+      {
+        "id": "swimming_pool",
+        "name": "Swimming pool"
+      },
+      {
+        "id": "trampoline",
+        "name": "Trampoline"
+      },
+      {
+        "id": "basketball_hoop",
+        "name": "Basketball hoop"
+      },
+      {
+        "id": "soccer_goal",
+        "name": "Soccer goal"
+      },
+      {
+        "id": "deer_stand",
+        "name": "Deer stand"
+      },
+      {
+        "id": "hunting_blind",
+        "name": "Hunting blind"
+      },
+      {
+        "id": "campground",
+        "name": "Campground"
+      },
+      {
+        "id": "rv_park",
+        "name": "RV park"
+      },
+      {
+        "id": "golf_course",
+        "name": "Golf course"
+      },
+      {
+        "id": "driving_range",
+        "name": "Driving range"
+      },
+      {
+        "id": "ski_lift",
+        "name": "Ski lift"
+      },
+      {
+        "id": "snowmaking_equipment",
+        "name": "Snowmaking equipment"
+      },
+      {
+        "id": "marina",
+        "name": "Marina"
+      },
+      {
+        "id": "public_boat_launch",
+        "name": "Public boat launch"
+      },
+      {
+        "id": "white_tailed_deer",
+        "name": "White-tailed deer"
+      },
+      {
+        "id": "wild_turkey",
+        "name": "Wild turkey"
+      },
+      {
+        "id": "bald_eagle",
+        "name": "Bald eagle"
+      },
+      {
+        "id": "hawk",
+        "name": "Hawk"
+      },
+      {
+        "id": "groundhog",
+        "name": "Groundhog"
+      },
+      {
+        "id": "raccoon",
+        "name": "Raccoon"
+      },
+      {
+        "id": "fox",
+        "name": "Fox"
+      },
+      {
+        "id": "coyote",
+        "name": "Coyote"
+      },
+      {
+        "id": "swan",
+        "name": "Swan"
+      },
+      {
+        "id": "canada_goose",
+        "name": "Canada goose"
+      },
+      {
+        "id": "heron",
+        "name": "Heron"
+      },
+      {
+        "id": "crane",
+        "name": "Crane"
+      },
+      {
+        "id": "turtle_crossing_road",
+        "name": "Turtle crossing road"
+      },
+      {
+        "id": "snake_crossing_road",
+        "name": "Snake crossing road"
+      },
+      {
+        "id": "beaver_dam",
+        "name": "Beaver dam"
+      },
+      {
+        "id": "muskrat_lodge",
+        "name": "Muskrat lodge"
+      },
+      {
+        "id": "apple_tree",
+        "name": "Apple tree"
+      },
+      {
+        "id": "cherry_tree",
+        "name": "Cherry tree"
+      },
+      {
+        "id": "pine_forest",
+        "name": "Pine forest"
+      },
+      {
+        "id": "hardwood_forest",
+        "name": "Hardwood forest"
+      },
+      {
+        "id": "above_ground_pool",
+        "name": "Above-ground pool"
+      },
+      {
+        "id": "in_ground_pool",
+        "name": "In-ground pool"
+      },
+      {
+        "id": "hockey_net",
+        "name": "Hockey net"
+      },
+      {
+        "id": "red_brick_house",
+        "name": "Red brick house"
+      },
+      {
+        "id": "white_vinyl_sided_house",
+        "name": "White vinyl-sided house"
+      },
+      {
+        "id": "ranch_style_house",
+        "name": "Ranch-style house"
+      },
+      {
+        "id": "two_story_house",
+        "name": "Two-story house"
+      },
+      {
+        "id": "gazebo",
+        "name": "Gazebo"
+      },
+      {
+        "id": "pergola",
+        "name": "Pergola"
+      },
+      {
+        "id": "detached_garage",
+        "name": "Detached garage"
+      },
+      {
+        "id": "attached_garage",
+        "name": "Attached garage"
+      },
+      {
+        "id": "american_flag",
+        "name": "American flag"
+      },
+      {
+        "id": "michigan_flag",
+        "name": "Michigan flag"
+      },
+      {
+        "id": "bird_feeder",
+        "name": "Bird feeder"
+      },
+      {
+        "id": "birdhouse",
+        "name": "Birdhouse"
+      },
+      {
+        "id": "lawn_flamingo",
+        "name": "Lawn flamingo"
+      },
+      {
+        "id": "garden_gnome",
+        "name": "Garden gnome"
+      },
+      {
+        "id": "above_ground_trampoline",
+        "name": "Above-ground trampoline"
+      },
+      {
+        "id": "backyard_playset",
+        "name": "Backyard playset"
+      },
+      {
+        "id": "walmart",
+        "name": "Walmart"
+      },
+      {
+        "id": "meijer",
+        "name": "Meijer"
+      },
+      {
+        "id": "home_depot",
+        "name": "Home Depot"
+      },
+      {
+        "id": "lowe_s",
+        "name": "Lowe's"
+      },
+      {
+        "id": "tractor_supply",
+        "name": "Tractor Supply"
+      },
+      {
+        "id": "rural_king",
+        "name": "Rural King"
+      },
+      {
+        "id": "kroger",
+        "name": "Kroger"
+      },
+      {
+        "id": "aldi",
+        "name": "Aldi"
+      },
+      {
+        "id": "walgreens",
+        "name": "Walgreens"
+      },
+      {
+        "id": "cvs",
+        "name": "CVS"
+      },
+      {
+        "id": "fire_station",
+        "name": "Fire station"
+      },
+      {
+        "id": "police_station",
+        "name": "Police station"
+      },
+      {
+        "id": "elementary_school",
+        "name": "Elementary school"
+      },
+      {
+        "id": "high_school",
+        "name": "High school"
+      },
+      {
+        "id": "library",
+        "name": "Library"
+      },
+      {
+        "id": "post_office",
+        "name": "Post office"
+      },
+      {
+        "id": "storage_barn",
+        "name": "Storage barn"
+      },
+      {
+        "id": "commercial_warehouse",
+        "name": "Commercial warehouse"
+      },
+      {
+        "id": "car_dealership",
+        "name": "Car dealership"
+      },
+      {
+        "id": "motorcycle_dealership",
+        "name": "Motorcycle dealership"
+      },
+      {
+        "id": "roadside_fruit_stand",
+        "name": "Roadside fruit stand"
+      },
+      {
+        "id": "roadside_flower_stand",
+        "name": "Roadside flower stand"
+      },
+      {
+        "id": "antique_store",
+        "name": "Antique store"
+      },
+      {
+        "id": "thrift_store",
+        "name": "Thrift store"
+      },
+      {
+        "id": "corn_maze_sign",
+        "name": "Corn maze sign"
+      },
+      {
+        "id": "pumpkin_patch_sign",
+        "name": "Pumpkin patch sign"
+      },
+      {
+        "id": "christmas_tree_farm",
+        "name": "Christmas tree farm"
+      },
+      {
+        "id": "cemetery",
+        "name": "Cemetery"
+      },
+      {
+        "id": "memorial_garden",
+        "name": "Memorial garden"
+      },
+      {
+        "id": "lighthouse",
+        "name": "Lighthouse"
+      },
+      {
+        "id": "harbor_beacon",
+        "name": "Harbor beacon"
+      },
+      {
+        "id": "roadside_historical_marker",
+        "name": "Roadside historical marker"
+      },
+      {
+        "id": "civil_war_monument",
+        "name": "Civil War monument"
+      },
+      {
+        "id": "drive_in_movie_theater",
+        "name": "Drive-in movie theater"
+      },
+      {
+        "id": "outdoor_concert_venue",
+        "name": "Outdoor concert venue"
+      },
+      {
+        "id": "billboard_for_local_festival",
+        "name": "Billboard for local festival"
+      },
+      {
+        "id": "billboard_for_county_fair",
+        "name": "Billboard for county fair"
+      },
+      {
+        "id": "car_parked_on_a_front_lawn",
+        "name": "Car parked on a front lawn"
+      },
+      {
+        "id": "car_parked_in_a_driveway_with_a_for_sale_sign",
+        "name": "Car parked in a driveway with a for-sale sign"
+      }
+    ],
+    "pairs": [
+      {
+        "id": "pair_001",
+        "item_ids": [
+          "cow",
+          "horse"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "farm_animals"
+      },
+      {
+        "id": "pair_002",
+        "item_ids": [
+          "sheep",
+          "goat"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "farm_animals"
+      },
+      {
+        "id": "pair_003",
+        "item_ids": [
+          "chicken_coop",
+          "duck_pond"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "farm_animals"
+      },
+      {
+        "id": "pair_004",
+        "item_ids": [
+          "donkey",
+          "mule"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "rare",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "farm_animals"
+      },
+      {
+        "id": "pair_005",
+        "item_ids": [
+          "cornfield",
+          "soybean_field"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "summer",
+          "fall"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "crops"
+      },
+      {
+        "id": "pair_006",
+        "item_ids": [
+          "hay_bales",
+          "straw_bales"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "farm_features"
+      },
+      {
+        "id": "pair_007",
+        "item_ids": [
+          "red_barn",
+          "white_barn"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "farm_buildings"
+      },
+      {
+        "id": "pair_008",
+        "item_ids": [
+          "grain_silo",
+          "grain_elevator"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "farm_buildings"
+      },
+      {
+        "id": "pair_009",
+        "item_ids": [
+          "tractor",
+          "combine_harvester"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "farm_machinery"
+      },
+      {
+        "id": "pair_010",
+        "item_ids": [
+          "apple_orchard",
+          "cherry_orchard"
+        ],
+        "category_id": "agriculture",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "orchards"
+      },
+      {
+        "id": "pair_011",
+        "item_ids": [
+          "water_tower",
+          "windmill"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "tall_structures"
+      },
+      {
+        "id": "pair_012",
+        "item_ids": [
+          "grain_elevator",
+          "water_tower"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "tall_structures"
+      },
+      {
+        "id": "pair_013",
+        "item_ids": [
+          "covered_bridge",
+          "wooden_pedestrian_bridge"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town"
+        ],
+        "likelihood": "rare",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "bridges"
+      },
+      {
+        "id": "pair_014",
+        "item_ids": [
+          "railroad_crossing",
+          "drawbridge"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "waterfront"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "road_infrastructure"
+      },
+      {
+        "id": "pair_015",
+        "item_ids": [
+          "round_hay_bale",
+          "square_hay_bale"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "summer",
+          "fall"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "farm_features"
+      },
+      {
+        "id": "pair_016",
+        "item_ids": [
+          "farm_pond",
+          "livestock_watering_pond"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "water_features"
+      },
+      {
+        "id": "pair_017",
+        "item_ids": [
+          "church_steeple",
+          "school_flagpole"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town",
+          "suburban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "tall_structures"
+      },
+      {
+        "id": "pair_018",
+        "item_ids": [
+          "cell_tower",
+          "radio_tower"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "urban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "communications"
+      },
+      {
+        "id": "pair_019",
+        "item_ids": [
+          "wooden_fence",
+          "wire_livestock_fence"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "fencing"
+      },
+      {
+        "id": "pair_020",
+        "item_ids": [
+          "wind_turbine",
+          "solar_panel_field"
+        ],
+        "category_id": "rural_infrastructure",
+        "region_ids": [
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "energy_infrastructure"
+      },
+      {
+        "id": "pair_021",
+        "item_ids": [
+          "taco_bell",
+          "mcdonald_s"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "universal"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "very_common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "fast_food"
+      },
+      {
+        "id": "pair_022",
+        "item_ids": [
+          "burger_king",
+          "wendy_s"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "universal"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "fast_food"
+      },
+      {
+        "id": "pair_023",
+        "item_ids": [
+          "arby_s",
+          "culver_s"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "highway"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "fast_food"
+      },
+      {
+        "id": "pair_024",
+        "item_ids": [
+          "dairy_queen",
+          "baskin_robbins"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "small_town"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "ice_cream_shops"
+      },
+      {
+        "id": "pair_025",
+        "item_ids": [
+          "subway",
+          "jimmy_john_s"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "sandwich_shops"
+      },
+      {
+        "id": "pair_026",
+        "item_ids": [
+          "domino_s",
+          "little_caesars"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "small_town"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "pizza_chains"
+      },
+      {
+        "id": "pair_027",
+        "item_ids": [
+          "tim_hortons",
+          "dunkin"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "michigan",
+          "great_lakes",
+          "northeast"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "coffee_shops"
+      },
+      {
+        "id": "pair_028",
+        "item_ids": [
+          "starbucks",
+          "biggby_coffee"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "coffee_shops"
+      },
+      {
+        "id": "pair_029",
+        "item_ids": [
+          "kfc",
+          "popeyes"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "universal"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "fast_food"
+      },
+      {
+        "id": "pair_030",
+        "item_ids": [
+          "local_diner",
+          "family_style_restaurant"
+        ],
+        "category_id": "food_and_local_businesses",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "independent_restaurants"
+      },
+      {
+        "id": "pair_031",
+        "item_ids": [
+          "fast_food_billboard",
+          "lawyer_billboard"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "billboards"
+      },
+      {
+        "id": "pair_032",
+        "item_ids": [
+          "car_dealership_billboard",
+          "casino_billboard"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "midwest"
+        ],
+        "environment_ids": [
+          "highway",
+          "suburban"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "billboards"
+      },
+      {
+        "id": "pair_033",
+        "item_ids": [
+          "real_estate_sign",
+          "political_campaign_sign"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "yard_signs"
+      },
+      {
+        "id": "pair_034",
+        "item_ids": [
+          "roofing_company_sign",
+          "landscaping_company_sign"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "small_town"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "contractor_advertising"
+      },
+      {
+        "id": "pair_035",
+        "item_ids": [
+          "farm_equipment_advertisement",
+          "tractor_dealership_sign"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "agricultural_advertising"
+      },
+      {
+        "id": "pair_036",
+        "item_ids": [
+          "liquor_store",
+          "tobacco_shop"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "small_town",
+          "urban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "retail_businesses"
+      },
+      {
+        "id": "pair_037",
+        "item_ids": [
+          "storage_facility",
+          "car_wash"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "commercial_businesses"
+      },
+      {
+        "id": "pair_038",
+        "item_ids": [
+          "self_storage_sign",
+          "u_haul_sign"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "moving_storage"
+      },
+      {
+        "id": "pair_039",
+        "item_ids": [
+          "gas_station_with_car_wash",
+          "gas_station_without_car_wash"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "highway"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "gas_stations"
+      },
+      {
+        "id": "pair_040",
+        "item_ids": [
+          "dollar_general",
+          "family_dollar"
+        ],
+        "category_id": "advertising_and_retail",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town",
+          "suburban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "discount_retailers"
+      },
+      {
+        "id": "pair_041",
+        "item_ids": [
+          "kayak_on_a_vehicle",
+          "bike_on_a_vehicle"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "highway"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "recreational_transport"
+      },
+      {
+        "id": "pair_042",
+        "item_ids": [
+          "boat_on_a_trailer",
+          "camper_on_a_trailer"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "highway"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "towed_recreation"
+      },
+      {
+        "id": "pair_043",
+        "item_ids": [
+          "motorcycle_on_a_trailer",
+          "atv_on_a_trailer"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "highway"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "towed_recreation"
+      },
+      {
+        "id": "pair_044",
+        "item_ids": [
+          "tractor_on_a_trailer",
+          "excavator_on_a_trailer"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "highway"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "heavy_equipment_transport"
+      },
+      {
+        "id": "pair_045",
+        "item_ids": [
+          "canoe_on_a_vehicle",
+          "paddleboard_on_a_vehicle"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "highway"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "recreational_transport"
+      },
+      {
+        "id": "pair_046",
+        "item_ids": [
+          "snowmobile_on_a_trailer",
+          "jet_ski_on_a_trailer"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "rural",
+          "highway"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "winter",
+          "summer"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "towed_recreation"
+      },
+      {
+        "id": "pair_047",
+        "item_ids": [
+          "flatbed_truck",
+          "box_truck"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "michigan",
+          "midwest",
+          "universal"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "commercial_vehicles"
+      },
+      {
+        "id": "pair_048",
+        "item_ids": [
+          "horse_trailer",
+          "livestock_trailer"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "highway"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "agricultural_transport"
+      },
+      {
+        "id": "pair_049",
+        "item_ids": [
+          "dump_truck",
+          "cement_mixer_truck"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "commercial_vehicles"
+      },
+      {
+        "id": "pair_050",
+        "item_ids": [
+          "pickup_towing_a_boat",
+          "pickup_towing_a_camper"
+        ],
+        "category_id": "vehicles_and_transport",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "rural",
+          "highway"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "towed_recreation"
+      },
+      {
+        "id": "pair_051",
+        "item_ids": [
+          "fishing_boat",
+          "pontoon_boat"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "waterfront",
+          "rural"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "boats"
+      },
+      {
+        "id": "pair_052",
+        "item_ids": [
+          "sailboat",
+          "motorboat"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "waterfront"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "boats"
+      },
+      {
+        "id": "pair_053",
+        "item_ids": [
+          "kayak",
+          "canoe"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "waterfront",
+          "rural",
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "watercraft"
+      },
+      {
+        "id": "pair_054",
+        "item_ids": [
+          "swimming_pool",
+          "trampoline"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "backyard_recreation"
+      },
+      {
+        "id": "pair_055",
+        "item_ids": [
+          "basketball_hoop",
+          "soccer_goal"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "michigan",
+          "midwest",
+          "universal"
+        ],
+        "environment_ids": [
+          "suburban",
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "backyard_recreation"
+      },
+      {
+        "id": "pair_056",
+        "item_ids": [
+          "deer_stand",
+          "hunting_blind"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "fall",
+          "winter"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "hunting_equipment"
+      },
+      {
+        "id": "pair_057",
+        "item_ids": [
+          "campground",
+          "rv_park"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "rural",
+          "waterfront"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "outdoor_recreation"
+      },
+      {
+        "id": "pair_058",
+        "item_ids": [
+          "golf_course",
+          "driving_range"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "rural"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "recreation_facilities"
+      },
+      {
+        "id": "pair_059",
+        "item_ids": [
+          "ski_lift",
+          "snowmaking_equipment"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "rare",
+        "seasonality": [
+          "winter"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "ski_facilities"
+      },
+      {
+        "id": "pair_060",
+        "item_ids": [
+          "marina",
+          "public_boat_launch"
+        ],
+        "category_id": "recreation_and_outdoors",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "waterfront"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "waterfront_facilities"
+      },
+      {
+        "id": "pair_061",
+        "item_ids": [
+          "white_tailed_deer",
+          "wild_turkey"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "wildlife"
+      },
+      {
+        "id": "pair_062",
+        "item_ids": [
+          "bald_eagle",
+          "hawk"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "rural",
+          "waterfront"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "birds_of_prey"
+      },
+      {
+        "id": "pair_063",
+        "item_ids": [
+          "groundhog",
+          "raccoon"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "wildlife"
+      },
+      {
+        "id": "pair_064",
+        "item_ids": [
+          "fox",
+          "coyote"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "wildlife"
+      },
+      {
+        "id": "pair_065",
+        "item_ids": [
+          "swan",
+          "canada_goose"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "waterfront",
+          "suburban",
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "waterfowl"
+      },
+      {
+        "id": "pair_066",
+        "item_ids": [
+          "heron",
+          "crane"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "waterfront",
+          "rural"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "birds"
+      },
+      {
+        "id": "pair_067",
+        "item_ids": [
+          "turtle_crossing_road",
+          "snake_crossing_road"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "wildlife_sightings"
+      },
+      {
+        "id": "pair_068",
+        "item_ids": [
+          "beaver_dam",
+          "muskrat_lodge"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "waterfront",
+          "rural"
+        ],
+        "likelihood": "rare",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "wildlife_structures"
+      },
+      {
+        "id": "pair_069",
+        "item_ids": [
+          "apple_tree",
+          "cherry_tree"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "trees"
+      },
+      {
+        "id": "pair_070",
+        "item_ids": [
+          "pine_forest",
+          "hardwood_forest"
+        ],
+        "category_id": "wildlife_and_nature",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "landscapes"
+      },
+      {
+        "id": "pair_071",
+        "item_ids": [
+          "above_ground_pool",
+          "in_ground_pool"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "backyard_features"
+      },
+      {
+        "id": "pair_072",
+        "item_ids": [
+          "basketball_hoop",
+          "hockey_net"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "backyard_sports"
+      },
+      {
+        "id": "pair_073",
+        "item_ids": [
+          "red_brick_house",
+          "white_vinyl_sided_house"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "small_town"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "residential_architecture"
+      },
+      {
+        "id": "pair_074",
+        "item_ids": [
+          "ranch_style_house",
+          "two_story_house"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "small_town"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "residential_architecture"
+      },
+      {
+        "id": "pair_075",
+        "item_ids": [
+          "gazebo",
+          "pergola"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "backyard_structures"
+      },
+      {
+        "id": "pair_076",
+        "item_ids": [
+          "detached_garage",
+          "attached_garage"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "rural"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "residential_structures"
+      },
+      {
+        "id": "pair_077",
+        "item_ids": [
+          "american_flag",
+          "michigan_flag"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "urban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "flags"
+      },
+      {
+        "id": "pair_078",
+        "item_ids": [
+          "bird_feeder",
+          "birdhouse"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "rural"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "yard_features"
+      },
+      {
+        "id": "pair_079",
+        "item_ids": [
+          "lawn_flamingo",
+          "garden_gnome"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "yard_decorations"
+      },
+      {
+        "id": "pair_080",
+        "item_ids": [
+          "above_ground_trampoline",
+          "backyard_playset"
+        ],
+        "category_id": "homes_and_neighborhoods",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "backyard_recreation"
+      },
+      {
+        "id": "pair_081",
+        "item_ids": [
+          "walmart",
+          "meijer"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "big_box_retailers"
+      },
+      {
+        "id": "pair_082",
+        "item_ids": [
+          "home_depot",
+          "lowe_s"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "michigan",
+          "midwest",
+          "universal"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "home_improvement_stores"
+      },
+      {
+        "id": "pair_083",
+        "item_ids": [
+          "tractor_supply",
+          "rural_king"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town",
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "farm_supply_stores"
+      },
+      {
+        "id": "pair_084",
+        "item_ids": [
+          "kroger",
+          "aldi"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "small_town"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "grocery_stores"
+      },
+      {
+        "id": "pair_085",
+        "item_ids": [
+          "walgreens",
+          "cvs"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "michigan",
+          "midwest",
+          "universal"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "pharmacies"
+      },
+      {
+        "id": "pair_086",
+        "item_ids": [
+          "fire_station",
+          "police_station"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "michigan",
+          "midwest",
+          "universal"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "urban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "public_services"
+      },
+      {
+        "id": "pair_087",
+        "item_ids": [
+          "elementary_school",
+          "high_school"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "michigan",
+          "midwest",
+          "universal"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "urban"
+        ],
+        "likelihood": "common",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "easy",
+        "active": true,
+        "subcategory_id": "schools"
+      },
+      {
+        "id": "pair_088",
+        "item_ids": [
+          "library",
+          "post_office"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town",
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "public_buildings"
+      },
+      {
+        "id": "pair_089",
+        "item_ids": [
+          "storage_barn",
+          "commercial_warehouse"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "industrial"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "commercial_buildings"
+      },
+      {
+        "id": "pair_090",
+        "item_ids": [
+          "car_dealership",
+          "motorcycle_dealership"
+        ],
+        "category_id": "public_and_commercial_places",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "suburban",
+          "urban",
+          "highway"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "vehicle_retailers"
+      },
+      {
+        "id": "pair_091",
+        "item_ids": [
+          "roadside_fruit_stand",
+          "roadside_flower_stand"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "roadside_businesses"
+      },
+      {
+        "id": "pair_092",
+        "item_ids": [
+          "antique_store",
+          "thrift_store"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town",
+          "suburban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "specialty_retail"
+      },
+      {
+        "id": "pair_093",
+        "item_ids": [
+          "corn_maze_sign",
+          "pumpkin_patch_sign"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "fall"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "seasonal_attractions"
+      },
+      {
+        "id": "pair_094",
+        "item_ids": [
+          "christmas_tree_farm",
+          "apple_orchard"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "fall",
+          "winter"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "seasonal_agriculture"
+      },
+      {
+        "id": "pair_095",
+        "item_ids": [
+          "cemetery",
+          "memorial_garden"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban",
+          "urban"
+        ],
+        "likelihood": "moderate",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "medium",
+        "active": true,
+        "subcategory_id": "landscaped_grounds"
+      },
+      {
+        "id": "pair_096",
+        "item_ids": [
+          "lighthouse",
+          "harbor_beacon"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "great_lakes"
+        ],
+        "environment_ids": [
+          "waterfront"
+        ],
+        "likelihood": "rare",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "waterfront_structures"
+      },
+      {
+        "id": "pair_097",
+        "item_ids": [
+          "roadside_historical_marker",
+          "civil_war_monument"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town",
+          "suburban"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "historical_landmarks"
+      },
+      {
+        "id": "pair_098",
+        "item_ids": [
+          "drive_in_movie_theater",
+          "outdoor_concert_venue"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "suburban"
+        ],
+        "likelihood": "rare",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "entertainment_venues"
+      },
+      {
+        "id": "pair_099",
+        "item_ids": [
+          "billboard_for_local_festival",
+          "billboard_for_county_fair"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town",
+          "suburban"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "event_advertising"
+      },
+      {
+        "id": "pair_100",
+        "item_ids": [
+          "car_parked_on_a_front_lawn",
+          "car_parked_in_a_driveway_with_a_for_sale_sign"
+        ],
+        "category_id": "roadside_and_miscellaneous",
+        "region_ids": [
+          "michigan",
+          "midwest"
+        ],
+        "environment_ids": [
+          "rural",
+          "small_town",
+          "suburban"
+        ],
+        "likelihood": "uncommon",
+        "seasonality": [
+          "year_round"
+        ],
+        "difficulty": "hard",
+        "active": true,
+        "subcategory_id": "roadside_observations"
+      }
+    ],
+    "categories": [
+      {
+        "id": "agriculture",
+        "label": "Agriculture & Farm Life"
+      },
+      {
+        "id": "rural_infrastructure",
+        "label": "Rural Roads & Infrastructure"
+      },
+      {
+        "id": "food_and_local_businesses",
+        "label": "Restaurants & Food"
+      },
+      {
+        "id": "advertising_and_retail",
+        "label": "Signs, Advertising & Retail"
+      },
+      {
+        "id": "vehicles_and_transport",
+        "label": "Vehicles & Transport"
+      },
+      {
+        "id": "recreation_and_outdoors",
+        "label": "Recreation & Outdoors"
+      },
+      {
+        "id": "wildlife_and_nature",
+        "label": "Wildlife & Nature"
+      },
+      {
+        "id": "homes_and_neighborhoods",
+        "label": "Homes & Neighborhoods"
+      },
+      {
+        "id": "public_and_commercial_places",
+        "label": "Retail, Commercial & Public Places"
+      },
+      {
+        "id": "roadside_and_miscellaneous",
+        "label": "Roadside Curiosities"
+      }
+    ],
+    "regions": [
+      {
+        "id": "michigan",
+        "label": "Michigan"
+      },
+      {
+        "id": "midwest",
+        "label": "Midwest"
+      },
+      {
+        "id": "great_lakes",
+        "label": "Great Lakes"
+      },
+      {
+        "id": "northeast",
+        "label": "Northeast"
+      },
+      {
+        "id": "south",
+        "label": "South"
+      },
+      {
+        "id": "east_coast",
+        "label": "East Coast"
+      },
+      {
+        "id": "universal",
+        "label": "Universal"
+      }
+    ],
+    "environments": [
+      {
+        "id": "highway",
+        "label": "Highway"
+      },
+      {
+        "id": "industrial",
+        "label": "Industrial"
+      },
+      {
+        "id": "rural",
+        "label": "Rural"
+      },
+      {
+        "id": "small_town",
+        "label": "Small Town"
+      },
+      {
+        "id": "suburban",
+        "label": "Suburban"
+      },
+      {
+        "id": "urban",
+        "label": "Urban"
+      },
+      {
+        "id": "waterfront",
+        "label": "Waterfront"
+      }
+    ],
+    "attribute_options": {
+      "likelihood": [
+        "very_common",
+        "common",
+        "moderate",
+        "uncommon",
+        "rare"
+      ],
+      "seasonality": [
+        "year_round",
+        "spring",
+        "summer",
+        "fall",
+        "winter"
+      ],
+      "difficulty": [
+        "easy",
+        "medium",
+        "hard"
+      ]
+    },
+    "subcategories": [
+      {
+        "id": "agricultural_advertising",
+        "label": "Agricultural Advertising"
+      },
+      {
+        "id": "agricultural_transport",
+        "label": "Agricultural Transport"
+      },
+      {
+        "id": "backyard_features",
+        "label": "Backyard Features"
+      },
+      {
+        "id": "backyard_recreation",
+        "label": "Backyard Recreation"
+      },
+      {
+        "id": "backyard_sports",
+        "label": "Backyard Sports"
+      },
+      {
+        "id": "backyard_structures",
+        "label": "Backyard Structures"
+      },
+      {
+        "id": "big_box_retailers",
+        "label": "Big Box Retailers"
+      },
+      {
+        "id": "billboards",
+        "label": "Billboards"
+      },
+      {
+        "id": "birds",
+        "label": "Birds"
+      },
+      {
+        "id": "birds_of_prey",
+        "label": "Birds Of Prey"
+      },
+      {
+        "id": "boats",
+        "label": "Boats"
+      },
+      {
+        "id": "bridges",
+        "label": "Bridges"
+      },
+      {
+        "id": "coffee_shops",
+        "label": "Coffee Shops"
+      },
+      {
+        "id": "commercial_buildings",
+        "label": "Commercial Buildings"
+      },
+      {
+        "id": "commercial_businesses",
+        "label": "Commercial Businesses"
+      },
+      {
+        "id": "commercial_vehicles",
+        "label": "Commercial Vehicles"
+      },
+      {
+        "id": "communications",
+        "label": "Communications"
+      },
+      {
+        "id": "contractor_advertising",
+        "label": "Contractor Advertising"
+      },
+      {
+        "id": "crops",
+        "label": "Crops"
+      },
+      {
+        "id": "discount_retailers",
+        "label": "Discount Retailers"
+      },
+      {
+        "id": "energy_infrastructure",
+        "label": "Energy Infrastructure"
+      },
+      {
+        "id": "entertainment_venues",
+        "label": "Entertainment Venues"
+      },
+      {
+        "id": "event_advertising",
+        "label": "Event Advertising"
+      },
+      {
+        "id": "farm_animals",
+        "label": "Farm Animals"
+      },
+      {
+        "id": "farm_buildings",
+        "label": "Farm Buildings"
+      },
+      {
+        "id": "farm_features",
+        "label": "Farm Features"
+      },
+      {
+        "id": "farm_machinery",
+        "label": "Farm Machinery"
+      },
+      {
+        "id": "farm_supply_stores",
+        "label": "Farm Supply Stores"
+      },
+      {
+        "id": "fast_food",
+        "label": "Fast Food"
+      },
+      {
+        "id": "fencing",
+        "label": "Fencing"
+      },
+      {
+        "id": "flags",
+        "label": "Flags"
+      },
+      {
+        "id": "gas_stations",
+        "label": "Gas Stations"
+      },
+      {
+        "id": "grocery_stores",
+        "label": "Grocery Stores"
+      },
+      {
+        "id": "heavy_equipment_transport",
+        "label": "Heavy Equipment Transport"
+      },
+      {
+        "id": "historical_landmarks",
+        "label": "Historical Landmarks"
+      },
+      {
+        "id": "home_improvement_stores",
+        "label": "Home Improvement Stores"
+      },
+      {
+        "id": "hunting_equipment",
+        "label": "Hunting Equipment"
+      },
+      {
+        "id": "ice_cream_shops",
+        "label": "Ice Cream Shops"
+      },
+      {
+        "id": "independent_restaurants",
+        "label": "Independent Restaurants"
+      },
+      {
+        "id": "landscaped_grounds",
+        "label": "Landscaped Grounds"
+      },
+      {
+        "id": "landscapes",
+        "label": "Landscapes"
+      },
+      {
+        "id": "moving_storage",
+        "label": "Moving Storage"
+      },
+      {
+        "id": "orchards",
+        "label": "Orchards"
+      },
+      {
+        "id": "outdoor_recreation",
+        "label": "Outdoor Recreation"
+      },
+      {
+        "id": "pharmacies",
+        "label": "Pharmacies"
+      },
+      {
+        "id": "pizza_chains",
+        "label": "Pizza Chains"
+      },
+      {
+        "id": "public_buildings",
+        "label": "Public Buildings"
+      },
+      {
+        "id": "public_services",
+        "label": "Public Services"
+      },
+      {
+        "id": "recreation_facilities",
+        "label": "Recreation Facilities"
+      },
+      {
+        "id": "recreational_transport",
+        "label": "Recreational Transport"
+      },
+      {
+        "id": "residential_architecture",
+        "label": "Residential Architecture"
+      },
+      {
+        "id": "residential_structures",
+        "label": "Residential Structures"
+      },
+      {
+        "id": "retail_businesses",
+        "label": "Retail Businesses"
+      },
+      {
+        "id": "road_infrastructure",
+        "label": "Road Infrastructure"
+      },
+      {
+        "id": "roadside_businesses",
+        "label": "Roadside Businesses"
+      },
+      {
+        "id": "roadside_observations",
+        "label": "Roadside Observations"
+      },
+      {
+        "id": "sandwich_shops",
+        "label": "Sandwich Shops"
+      },
+      {
+        "id": "schools",
+        "label": "Schools"
+      },
+      {
+        "id": "seasonal_agriculture",
+        "label": "Seasonal Agriculture"
+      },
+      {
+        "id": "seasonal_attractions",
+        "label": "Seasonal Attractions"
+      },
+      {
+        "id": "ski_facilities",
+        "label": "Ski Facilities"
+      },
+      {
+        "id": "specialty_retail",
+        "label": "Specialty Retail"
+      },
+      {
+        "id": "tall_structures",
+        "label": "Tall Structures"
+      },
+      {
+        "id": "towed_recreation",
+        "label": "Towed Recreation"
+      },
+      {
+        "id": "trees",
+        "label": "Trees"
+      },
+      {
+        "id": "vehicle_retailers",
+        "label": "Vehicle Retailers"
+      },
+      {
+        "id": "water_features",
+        "label": "Water Features"
+      },
+      {
+        "id": "watercraft",
+        "label": "Watercraft"
+      },
+      {
+        "id": "waterfowl",
+        "label": "Waterfowl"
+      },
+      {
+        "id": "waterfront_facilities",
+        "label": "Waterfront Facilities"
+      },
+      {
+        "id": "waterfront_structures",
+        "label": "Waterfront Structures"
+      },
+      {
+        "id": "wildlife",
+        "label": "Wildlife"
+      },
+      {
+        "id": "wildlife_sightings",
+        "label": "Wildlife Sightings"
+      },
+      {
+        "id": "wildlife_structures",
+        "label": "Wildlife Structures"
+      },
+      {
+        "id": "yard_decorations",
+        "label": "Yard Decorations"
+      },
+      {
+        "id": "yard_features",
+        "label": "Yard Features"
+      },
+      {
+        "id": "yard_signs",
+        "label": "Yard Signs"
+      }
+    ]
+  },
+  "game_rules": {
+    "players_per_game": 2,
+    "categories_per_round": 3,
+    "round_win_condition": "best_of_three",
+    "pair_selection": {
+      "require_distinct_categories": true,
+      "prefer_similar_likelihood": true,
+      "respect_selected_regions": true,
+      "respect_selected_environments": true,
+      "respect_current_season": true,
+      "avoid_recently_played_pairs": true
+    }
+  }
+}
+</script>
+  <script src="app.js"></script>
+</body>
+</html>
