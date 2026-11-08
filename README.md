@@ -64,7 +64,7 @@ The data is normalized. Pairs reference items, categories and tags by ID.
 
 ### How pairs are chosen
 
-- **Region:** a pair matches if it shares any selected region. Pairs tagged `universal` always match. If no region is selected, any region matches.
+- **Region:** a pair matches if it shares any selected region. `universal` is an ordinary tag for pairs that can be spotted anywhere, and those pairs are included only when Universal is selected (it is selected by default). If no region is selected, any region matches.
 - **Environment:** a pair matches if it shares any selected environment. If none is selected, any environment matches.
 - **Season:** a pair matches if it lists the chosen season or `year_round`. "Any Season" disables this filter.
 - **Difficulty:** an exact match, or "Any" for a mix.

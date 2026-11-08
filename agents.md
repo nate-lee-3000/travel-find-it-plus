@@ -134,9 +134,9 @@ Allow selection of:
 - Northeast
 - South
 - East Coast
-- Universal / Any Region
+- Universal (pairs that can be spotted in any region)
 
-Allow multiple regions to be selected.
+Allow multiple regions to be selected. Selecting Universal includes universal-tagged pairs alongside any other selected regions. Selecting no regions means any region.
 
 **Driving environment**
 Allow selection of:

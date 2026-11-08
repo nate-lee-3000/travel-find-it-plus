@@ -173,8 +173,8 @@
 
   function pairMatches(p, s, use) {
     if (use.region && s.regions.length) {
-      const r = p.region_ids || [];
-      if (!r.includes('universal') && !r.some(x => s.regions.includes(x))) return false;
+      // 'universal' is an ordinary tag: those pairs are included only when Universal is selected.
+      if (!(p.region_ids || []).some(x => s.regions.includes(x))) return false;
     }
     if (use.env && s.environments.length) {
       if (!(p.environment_ids || []).some(x => s.environments.includes(x))) return false;
@@ -242,7 +242,7 @@
   }
 
   // ---------- Round lifecycle ----------
-  const ui = { screen: 'home', modal: null, resumePrompted: false };
+  const ui = { screen: 'home', modal: null };
 
   function newRoundFromSettings(avoidIds) {
     const gen = generatePairs(store.settings, avoidIds);
@@ -371,8 +371,9 @@
       r.lastToggle = null;
     }
     if (r) r.pending = null;
+    ui.modal = null;
     save();
-    render();
+    show(r && r.status === 'playing' ? 'play' : ui.screen);
   }
 
   function finishRound(result) {
@@ -475,7 +476,7 @@
       <div class="hero">
         <div class="logo" aria-hidden="true"><span class="dot dot-p1"></span><span class="dot dot-p2"></span></div>
         <h1>Road Trip Spotter</h1>
-        <p class="tagline">Two players. Three pairs. First to spot two wins.</p>
+        <p class="tagline">Two players. Three pairs. First to two points wins.</p>
       </div>
       ${resume}
       <nav class="menu">
@@ -512,8 +513,8 @@
       </section>
       <section class="card">
         <h2>Region <small>choose any</small></h2>
-        <div class="chips">${DB.regions.map(r => chip('regions', r.id, r.id === 'universal' ? 'Universal / Any Region' : r.label, s.regions.includes(r.id))).join('')}</div>
-        <p class="hint">Universal pairs are always included. Nothing selected means any region.</p>
+        <div class="chips">${DB.regions.map(r => chip('regions', r.id, r.id === 'universal' ? 'Universal (found anywhere)' : r.label, s.regions.includes(r.id))).join('')}</div>
+        <p class="hint">Universal adds pairs that can be spotted in any region. Nothing selected means any region.</p>
       </section>
       <section class="card">
         <h2>Driving environment <small>choose any</small></h2>
@@ -641,7 +642,8 @@
   }
 
   function renderResults() {
-    const e = store.lastResult;
+    // Prefer the history entry: it keeps receiving finds made while continuing the board.
+    const e = store.lastResult && (store.history.find(h => h.id === store.lastResult.id) || store.lastResult);
     if (!e) return renderHome();
     // Older saved rounds may predate the point rules (e.g. recorded ties).
     const msg = e.result === 'tie'
@@ -741,10 +743,13 @@
     let title = '', body = '', buttons = '';
     if (r && r.status === 'playing' && r.pending) {
       const w = r.pending;
+      // Rounds restored from older saves have no last tap to undo; let players review the board instead.
+      const canUndo = !!r.lastToggle;
       title = `${esc(r[w])} has two points!`;
-      body = 'Confirm the win, or undo the last tap if it was a mistake.';
+      body = canUndo ? 'Confirm the win, or undo the last tap if it was a mistake.'
+        : 'Confirm the win, or go back to the board to fix any mistaken marks.';
       buttons = `<button class="btn btn-primary btn-lg btn-${w}" data-action="finish" data-result="${w}">${esc(r[w])} wins</button>
-        <button class="btn btn-secondary" data-action="undo-last">Undo last tap</button>`;
+        <button class="btn btn-secondary" data-action="undo-last">${canUndo ? 'Undo last tap' : 'Back to board'}</button>`;
     } else if (m) {
       title = esc(m.title);
       body = esc(m.body);
